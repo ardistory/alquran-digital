@@ -3,12 +3,14 @@ import AppLayout from "./layouts/AppLayout.jsx";
 import axios from "axios";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./components/ui/card.js";
 import { Button } from "./components/ui/button.js";
-import { BookOpen, Loader, Play } from "lucide-react";
+import { BookText, Info, Loader, Volume2, X } from "lucide-react";
 import { Input } from "./components/ui/input.js";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./components/ui/dialog.js";
+import { Badge } from "./components/ui/badge.js";
 
 function App() {
     const [qurans, setQurans] = useState([]);
+    const [ayats, setAyats] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState('');
 
@@ -33,7 +35,14 @@ function App() {
     return (
         <AppLayout>
             <div className={'space-y-5'}>
-                <Input placeholder={'Cari...'} onChange={(e) => setSearch(e.target.value)} />
+                <div className={'sticky top-28 bg-white dark:bg-black flex gap-5'}>
+                    <Input value={search} placeholder={'Cari...'} onChange={(e) => setSearch(e.target.value)} />
+                    {search.length > 0 && (
+                        <Button variant={'secondary'} onClick={() => setSearch('')}>
+                            <X />
+                        </Button>
+                    )}
+                </div>
 
                 {(isLoading) ? (
                     <div>
@@ -46,28 +55,34 @@ function App() {
                                 <p>
                                     {quran.nama}
                                 </p>
-                                <p>
-                                    {quran.nama}
+                                <p className={'font-Amiri'}>
+                                    {quran.asma}
                                 </p>
                             </CardTitle>
                             <CardDescription className={'w-full flex justify-between'}>
-                                <p>
-                                    {quran.nama}
-                                </p>
-                                <p>
-                                    {quran.nama}
-                                </p>
+                                <Badge variant={'secondary'}>
+                                    {quran.arti}
+                                </Badge>
+                                <Badge variant={'secondary'}>
+                                    {quran.ayat} ayat
+                                </Badge>
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {/* {generateAyat(quran.nomor)} */}
+                            <Button onClick={() => generateAyat(quran.nomor)}>
+                                Baca Qur'an
+                            </Button>
                         </CardContent>
                         <CardFooter className={'flex gap-5'}>
+                            <Button>
+                                <Volume2 />
+                                Audio
+                            </Button>
                             <Dialog>
                                 <DialogTrigger asChild={true}>
-                                    <Button>
-                                        <BookOpen />
-                                        Informasi Surat
+                                    <Button variant={"outline"}>
+                                        <BookText />
+                                        Informasi
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent className={'dark:text-white'}>
@@ -80,10 +95,6 @@ function App() {
                                     <p className={'dark:text-white'} dangerouslySetInnerHTML={{ __html: quran.keterangan }} />
                                 </DialogContent>
                             </Dialog>
-                            <Button>
-                                <Play />
-                                Audio
-                            </Button>
                         </CardFooter>
                     </Card>
                 ))}

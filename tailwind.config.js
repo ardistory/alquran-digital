@@ -7,7 +7,8 @@ export default {
   ],
   theme: {
     fontFamily: {
-      'Inter': ['Inter']
+      'Inter': ['Inter'],
+      'Amiri': ['Amiri']
     },
     extend: {
       borderRadius: {
