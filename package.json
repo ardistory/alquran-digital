@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
+    "react-audio-player": "^0.17.0",
     "react-dom": "^19.1.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",

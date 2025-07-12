@@ -7,10 +7,14 @@ import { BookText, Info, Loader, Volume2, X } from "lucide-react";
 import { Input } from "./components/ui/input.js";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./components/ui/dialog.js";
 import { Badge } from "./components/ui/badge.js";
+import convertToArabIndia from "./lib/convertNumber.js";
+import { cn } from "./lib/utils.js";
+import ReactAudioPlayer from "react-audio-player";
 
 function App() {
     const [qurans, setQurans] = useState([]);
     const [ayats, setAyats] = useState([]);
+    const [suratSelected, setSuratSelected] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState('');
 
@@ -26,38 +30,45 @@ function App() {
 
     const filteredQuran = qurans.filter(quran => quran.nama.toLowerCase().includes(search.toLowerCase()));
 
-    const generateAyat = async (nomor) => {
+    const generateAyat = async (nomor, nama, ayat, audio) => {
+        setSuratSelected(prev => ({ ...prev, nomor, nama, ayat, audio: `https://${audio.split('//')[1]}` }));
+
         const { data } = await axios.get(`${import.meta.env.VITE_API_URL_AYAT}/${nomor}`);
+        setAyats(data);
         (data.length > 0) ? setIsLoading(false) : setIsLoading(true);
-        console.log(data);
+    };
+
+    const clearData = () => {
+        setSearch('');
+        setAyats([]);
     };
 
     return (
         <AppLayout>
             <div className={'space-y-5'}>
-                <div className={'sticky top-28 bg-white dark:bg-black flex gap-5'}>
+                <div className={'sticky top-28 bg-white dark:bg-black flex gap-5 rounded'}>
                     <Input value={search} placeholder={'Cari...'} onChange={(e) => setSearch(e.target.value)} />
                     {search.length > 0 && (
-                        <Button variant={'secondary'} onClick={() => setSearch('')}>
+                        <Button variant={'outline'} onClick={() => clearData()}>
                             <X />
                         </Button>
                     )}
                 </div>
 
                 {(isLoading) ? (
-                    <div>
-                        <Loader className={'animate-spin'} />
+                    <div className={'fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]'}>
+                        <Loader className={'animate-spin'} size={55} />
                     </div>
                 ) : filteredQuran.map((quran, index) => (
                     <Card key={index}>
                         <CardHeader>
                             <CardTitle className={'w-full flex justify-between'}>
-                                <p>
+                                <Badge variant={'secondary'} className={'text-lg'}>
                                     {quran.nama}
-                                </p>
-                                <p className={'font-Amiri'}>
+                                </Badge>
+                                <Badge className={'font-Amiri text-2xl'} variant={'secondary'}>
                                     {quran.asma}
-                                </p>
+                                </Badge>
                             </CardTitle>
                             <CardDescription className={'w-full flex justify-between'}>
                                 <Badge variant={'secondary'}>
@@ -69,18 +80,31 @@ function App() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Button onClick={() => generateAyat(quran.nomor)}>
-                                Baca Qur'an
-                            </Button>
+                            {quran.nomor === suratSelected.nomor && (
+                                <div className={'space-y-5'}>
+                                    {ayats.map((ayat, index) => (
+                                        <Card key={index}>
+                                            <CardHeader>
+                                                <CardTitle className={'font-Amiri text-2xl text-end leading-[55px]'}>
+                                                    {ayat.ar}({convertToArabIndia(ayat.nomor)})
+                                                </CardTitle>
+                                                <CardDescription className={'text-xs'}>
+                                                    {ayat.id}
+                                                </CardDescription>
+                                            </CardHeader>
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
                         </CardContent>
-                        <CardFooter className={'flex gap-5'}>
-                            <Button>
-                                <Volume2 />
-                                Audio
+                        <CardFooter className={'flex justify-between md:justify-normal md:gap-5'}>
+                            <Button onClick={() => generateAyat(quran.nomor, quran.nama, quran.ayat, quran.audio)} variant={'secondary'}>
+                                <BookText />
+                                Lihat Ayat
                             </Button>
                             <Dialog>
                                 <DialogTrigger asChild={true}>
-                                    <Button variant={"outline"}>
+                                    <Button variant={'secondary'}>
                                         <BookText />
                                         Informasi
                                     </Button>
@@ -99,7 +123,39 @@ function App() {
                     </Card>
                 ))}
             </div>
-        </AppLayout>
+
+            <Card className={cn('bg-white dark:bg-black dark:text-white w-full h-44 bottom-[-180px] fixed left-0 shadow-2xl shadow-black transition-all duration-200', { 'bottom-0': ayats.length > 0 })}>
+                <CardHeader>
+                    <div className={'flex flex-col gap-5'}>
+                        <div className={'flex items-center justify-between border-b-2 pb-5'}>
+                            <div>
+                                <CardTitle>
+                                    {suratSelected.nama}
+                                </CardTitle>
+                                <CardDescription>
+                                    {suratSelected.ayat} Ayat
+                                </CardDescription>
+                            </div>
+                            <div className={'flex gap-5'}>
+                                <Button variant={'secondary'}>
+                                    <Volume2 />
+                                    Audio
+                                </Button>
+                                <Button size={'icon'} variant={'secondary'} onClick={() => clearData()}>
+                                    <X />
+                                </Button>
+                            </div>
+                        </div>
+                        <div className={'flex justify-center'}>
+                            <ReactAudioPlayer
+                                src={suratSelected.audio}
+                                controls
+                            />
+                        </div>
+                    </div>
+                </CardHeader>
+            </Card>
+        </AppLayout >
     );
 }
 
