@@ -1,125 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Qur'an</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <style>
-        * {
-            transition: all .7s ease-in-out;
-        }
-
-        .audioCard {
-            background-color: rgb(0, 156, 156);
-            position: fixed;
-            display: flex;
-            width: 100%;
-            height: 60px;
-            padding: 10px;
-            bottom: -100px;
-            color: white;
-            align-items: center;
-            justify-content: center;
-            border-top-right-radius: 15px;
-            border-top-left-radius: 15px;
-            flex-direction: column;
-            z-index: 99;
-        }
-
-        #judulAudioSurat {
-            background-color: rgb(0, 187, 187);
-            padding: 0 10px;
-            border-top-right-radius: 15px;
-            border-top-left-radius: 15px;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/javascript.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Al-Qur'an Digital</title>
 </head>
 
-<body class="bg-dark">
-    <div class="audioCard">
-
-    </div>
-    <div class="container" style="margin-bottom: 80px;">
-        <div class="row mt-3">
-            <div class="col-sm-4 text-center">
-                <h4 class="text-light bg-info p-1 rounded">Al-Qur'an</h4>
-            </div>
-            <div class="col-sm-4 offset-sm-4">
-                <input type="text" id="searchInput" placeholder="Cari Surat..." class="form-control">
-            </div>
-        </div>
-        <div>
-            <table id="dataTable" class="display col">
-                <thead>
-                    <tr>
-                    </tr>
-                </thead>
-                <tbody id="surat">
-
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Modal Surat-->
-        <div class="modal fade" id="bacaSuratModal" tabindex="-1" aria-labelledby="bacaSuratModal" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered baca-surat">
-
-            </div>
-        </div>
-        <!-- End Modal Surat -->
-
-        <!-- Modal Keterangan-->
-        <div class="modal fade" id="keteranganSuratModal" tabindex="-1" aria-labelledby="keteranganSuratModal"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered keterangan-surat">
-
-            </div>
-        </div>
-        <!-- End Modal Keterangan -->
-
-    </div>
-    <script src="./js/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
-        crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function () {
-            // Fungsi untuk melakukan pencarian pada tabel
-            function searchTable() {
-                var input, filter, table, tr, td, i, txtValue;
-                input = $("#searchInput");
-                filter = input.val().toUpperCase();
-                table = $("#dataTable");
-                tr = table.find("tr");
-
-                // Loop melalui setiap baris tabel dan sembunyikan yang tidak cocok dengan kriteria pencarian
-                for (i = 1; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName("td");
-                    for (var j = 0; j < td.length; j++) {
-                        if (td[j]) {
-                            txtValue = td[j].textContent || td[j].innerText;
-                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                                tr[i].style.display = "";
-                                break;
-                            } else {
-                                tr[i].style.display = "none";
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Event listener untuk memanggil fungsi pencarian saat input berubah
-            $("#searchInput").on("keyup", searchTable);
-        });
-    </script>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
