@@ -14,7 +14,7 @@ function App() {
 
     useEffect(() => {
         const getQuranFromApi = async () => {
-            const { data } = await axios.get(import.meta.env.VITE_API_URL);
+            const { data } = await axios.get(import.meta.env.VITE_API_URL_SURAT);
             setQurans(data);
             (data.length > 0) ? setIsLoading(false) : setIsLoading(true);
         };
@@ -23,6 +23,12 @@ function App() {
     }, []);
 
     const filteredQuran = qurans.filter(quran => quran.nama.toLowerCase().includes(search.toLowerCase()));
+
+    const generateAyat = async (nomor) => {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL_AYAT}/${nomor}`);
+        (data.length > 0) ? setIsLoading(false) : setIsLoading(true);
+        console.log(data);
+    };
 
     return (
         <AppLayout>
@@ -54,7 +60,7 @@ function App() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            surat
+                            {/* {generateAyat(quran.nomor)} */}
                         </CardContent>
                         <CardFooter className={'flex gap-5'}>
                             <Dialog>
