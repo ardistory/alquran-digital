@@ -1,8 +1,23 @@
+import ToggleTheme from "@/components/ToggleTheme.jsx";
+import { Button } from "@/components/ui/button.js";
+import { AlignJustify } from "lucide-react";
+
 const AppLayout = ({ children }) => {
     return (
-        <div>
-            layout
-            {children}
+        <div className={'font-Inter'}>
+            <div className={'bg-white dark:bg-black dark:text-white w-full h-24 flex items-center border-b fixed'}>
+                <div className={'container mx-auto px-5 md:px-0 flex items-center justify-between'}>
+                    <div className={'text-4xl italic font-bold'}>
+                        Qur'an Digital
+                    </div>
+                    <ToggleTheme />
+                </div>
+            </div>
+            <div className={'dark:bg-black dark:text-white min-h-screen pt-28'}>
+                <div className={'container mx-auto px-5 pb-5 md:px-0'}>
+                    {children}
+                </div>
+            </div>
         </div>
     );
 };

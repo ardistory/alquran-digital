@@ -2,6 +2,7 @@
     "compilerOptions": {
         "outDir": "./dist",
         "allowJs": true,
+        "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
             "@/*": [
