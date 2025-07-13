@@ -9,6 +9,7 @@ import { Badge } from "./components/ui/badge.js";
 import convertToArabIndia from "./lib/convertNumber.js";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/ui/select.js";
 import { cn } from "./lib/utils.js";
+import { ScrollArea } from "./components/ui/scroll-area.js";
 
 function App() {
     const [allSurat, setAllSurat] = useState([]);
@@ -21,6 +22,7 @@ function App() {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef(null);
     const [detailAudioPlayed, setDetailAudioPlayed] = useState({});
+    const [tafsir, setTafsir] = useState('');
 
     const getQuranFromApi = async (nomor = 1) => {
         const { data } = await axios.get(`${import.meta.env.VITE_API_URL_SURAT}/${nomor}`);
@@ -95,8 +97,18 @@ function App() {
         setIsPlaying(false);
     };
 
-    const clearData = () => {
+    const getTafsir = async (nomorSurat, nomorAyat) => {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL_TAFSIR}/${nomorSurat}`);
+
+        if (data.data.tafsir) {
+            const tafsir = data.data.tafsir.find(tafsir => tafsir.ayat === nomorAyat);
+            setTafsir(tafsir.teks);
+        }
     };
+
+    useEffect(() => {
+
+    }, [tafsir]);
 
     return (
         <AppLayout>
@@ -179,10 +191,25 @@ function App() {
                                                 <Volume2 />
                                                 Audio
                                             </Button>
-                                            <Button>
-                                                <BookOpenCheck />
-                                                Tafsir
-                                            </Button>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button onClick={() => getTafsir(qurans.nomor, quran.nomorAyat)}>
+                                                        <BookOpenCheck />
+                                                        Tafsir
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className={'dark:text-white'}>
+                                                    <DialogTitle className={'dark:text-white'}>
+                                                        {qurans.namaLatin}
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Tafsir Ayat {quran.nomorAyat}
+                                                    </DialogDescription>
+                                                    <ScrollArea className={'h-[400px]'}>
+                                                        <p className={'dark:text-white'} dangerouslySetInnerHTML={{ __html: tafsir }} />
+                                                    </ScrollArea>
+                                                </DialogContent>
+                                            </Dialog>
                                             {(validasiCheckAyat(qurans.namaLatin, quran.nomorAyat)) ? (
                                                 <Button size={'icon'} onClick={() => unCheckAyat(qurans.namaLatin, quran.nomorAyat)}>
                                                     <X />
