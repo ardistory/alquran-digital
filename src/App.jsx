@@ -240,10 +240,23 @@ function App() {
                                         <Volume2 />
                                         Audio Full
                                     </Button>
-                                    <Button>
-                                        <NotebookText />
-                                        Informasi Surat
-                                    </Button>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button>
+                                                <NotebookText />
+                                                Informasi Surat
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className={'dark:text-white'}>
+                                            <DialogTitle className={'dark:text-white'}>
+                                                {qurans.namaLatin}
+                                            </DialogTitle>
+                                            <DialogDescription>
+                                                {qurans.jumlahAyat} Ayat
+                                            </DialogDescription>
+                                            <p className={'dark:text-white'} dangerouslySetInnerHTML={{ __html: qurans.deskripsi }} />
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                             </div>
                         </CardHeader>
