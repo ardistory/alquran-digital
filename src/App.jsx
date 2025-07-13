@@ -84,9 +84,9 @@ function App() {
         }
     };
 
-    const audioPlay = (namaLatin, nomorAyat, audioSrc) => {
+    const audioPlay = (namaLatin, nomorAyat, audioSrc, type) => {
         audioRef.current.src = audioSrc;
-        setDetailAudioPlayed({ namaLatin, nomorAyat });
+        setDetailAudioPlayed({ namaLatin, nomorAyat, type });
         setIsPlaying(true);
     };
 
@@ -175,7 +175,7 @@ function App() {
                                     </CardHeader>
                                     <CardContent>
                                         <div className={'flex items-center justify-between md:gap-5 md:justify-start'}>
-                                            <Button onClick={() => audioPlay(qurans.namaLatin, quran.nomorAyat, quran.audio['05'])}>
+                                            <Button onClick={() => audioPlay(qurans.namaLatin, quran.nomorAyat, quran.audio['05'], 'single')}>
                                                 <Volume2 />
                                                 Audio
                                             </Button>
@@ -211,7 +211,7 @@ function App() {
                                         {detailAudioPlayed.namaLatin}
                                     </CardTitle>
                                     <CardDescription>
-                                        Ayat {detailAudioPlayed.nomorAyat}
+                                        {(detailAudioPlayed.type === 'single') ? `Ayat ${detailAudioPlayed.nomorAyat}` : (detailAudioPlayed.type === 'full') ? `Ayat 1 - Ayat ${detailAudioPlayed.nomorAyat}` : null}
                                     </CardDescription>
                                 </div>
                                 <Volume2 size={40} className={'animate-pulse'} />
@@ -236,7 +236,7 @@ function App() {
                                     </CardDescription>
                                 </div>
                                 <div className={'flex gap-5'}>
-                                    <Button>
+                                    <Button onClick={() => audioPlay(qurans.namaLatin, qurans.jumlahAyat, qurans.audioFull['05'], 'full')}>
                                         <Volume2 />
                                         Audio Full
                                     </Button>
