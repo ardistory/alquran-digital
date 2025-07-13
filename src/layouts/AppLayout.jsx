@@ -12,7 +12,7 @@ const AppLayout = ({ children }) => {
                 </div>
             </div>
             <div className={'dark:bg-black dark:text-white min-h-screen pt-28'}>
-                <div className={'container mx-auto px-5 pb-5 md:px-0'}>
+                <div className={'container mx-auto px-5 pb-32 md:px-0'}>
                     {children}
                 </div>
             </div>
