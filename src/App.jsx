@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppLayout from "./layouts/AppLayout.jsx";
 import axios from "axios";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./components/ui/card.js";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card.js";
 import { Button } from "./components/ui/button.js";
-import { BookOpenCheck, BookText, Car, CheckCheck, ChevronLeft, ChevronRight, Loader, NotebookText, Volume2, X } from "lucide-react";
-import { Input } from "./components/ui/input.js";
+import { BookOpenCheck, CheckCheck, ChevronLeft, ChevronRight, Loader, NotebookText, Volume2, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./components/ui/dialog.js";
 import { Badge } from "./components/ui/badge.js";
 import convertToArabIndia from "./lib/convertNumber.js";
-import { cn } from "./lib/utils.js";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/ui/select.js";
+import { cn } from "./lib/utils.js";
 
 function App() {
     const [allSurat, setAllSurat] = useState([]);
@@ -19,6 +18,9 @@ function App() {
         const storedAyatChecked = localStorage.getItem('ayatChecked');
         return storedAyatChecked ? JSON.parse(storedAyatChecked) : [];
     });
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef(null);
+    const [detailAudioPlayed, setDetailAudioPlayed] = useState({});
 
     const getQuranFromApi = async (nomor = 1) => {
         const { data } = await axios.get(`${import.meta.env.VITE_API_URL_SURAT}/${nomor}`);
@@ -80,6 +82,17 @@ function App() {
         } else {
             return false;
         }
+    };
+
+    const audioPlay = (namaLatin, nomorAyat, audioSrc) => {
+        audioRef.current.src = audioSrc;
+        setDetailAudioPlayed({ namaLatin, nomorAyat });
+        setIsPlaying(true);
+    };
+
+    const audioClose = () => {
+        audioRef.current.src = '';
+        setIsPlaying(false);
     };
 
     const clearData = () => {
@@ -162,7 +175,7 @@ function App() {
                                     </CardHeader>
                                     <CardContent>
                                         <div className={'flex items-center justify-between md:gap-5 md:justify-start'}>
-                                            <Button>
+                                            <Button onClick={() => audioPlay(qurans.namaLatin, quran.nomorAyat, quran.audio['05'])}>
                                                 <Volume2 />
                                                 Audio
                                             </Button>
@@ -189,30 +202,53 @@ function App() {
             </div>
 
             {Object.keys(qurans).length > 0 && (
-                <Card className={'container fixed bottom-5 left-[50%] translate-x-[-50%]'}>
-                    <CardHeader>
-                        <div className={'flex items-center justify-between'}>
-                            <div>
-                                <CardTitle>
-                                    {qurans.namaLatin}
-                                </CardTitle>
-                                <CardDescription>
-                                    {qurans.jumlahAyat} Ayat
-                                </CardDescription>
-                            </div>
-                            <div className={'flex gap-5'}>
-                                <Button>
-                                    <Volume2 />
-                                    Audio Full
-                                </Button>
-                                <Button>
-                                    <NotebookText />
-                                    Informasi Surat
+                <>
+                    <Card className={cn('container fixed bottom-32 left-[50%] translate-x-[-50%]', { 'hidden': !isPlaying })}>
+                        <CardHeader>
+                            <div className={'flex items-center justify-between'}>
+                                <div>
+                                    <CardTitle>
+                                        {detailAudioPlayed.namaLatin}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Ayat {detailAudioPlayed.nomorAyat}
+                                    </CardDescription>
+                                </div>
+                                <Volume2 size={40} className={'animate-pulse'} />
+                                <Button size={'icon'} variant={'ghost'} onClick={() => audioClose()}>
+                                    <X />
                                 </Button>
                             </div>
-                        </div>
-                    </CardHeader>
-                </Card>
+                            <figure>
+                                <audio ref={audioRef} autoPlay></audio>
+                            </figure>
+                        </CardHeader>
+                    </Card>
+                    <Card className={'container fixed bottom-5 left-[50%] translate-x-[-50%]'}>
+                        <CardHeader>
+                            <div className={'flex items-center justify-between'}>
+                                <div>
+                                    <CardTitle>
+                                        {qurans.namaLatin}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {qurans.jumlahAyat} Ayat
+                                    </CardDescription>
+                                </div>
+                                <div className={'flex gap-5'}>
+                                    <Button>
+                                        <Volume2 />
+                                        Audio Full
+                                    </Button>
+                                    <Button>
+                                        <NotebookText />
+                                        Informasi Surat
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardHeader>
+                    </Card>
+                </>
             )}
         </AppLayout >
     );
