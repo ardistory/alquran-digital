@@ -123,7 +123,7 @@ function App() {
                         <CardHeader>
                             <CardTitle>
                                 <div className={'flex flex-col gap-5'}>
-                                    <Select value={qurans.nomor} defaultValue={1} onValueChange={(value) => getQuranFromApi(value)}>
+                                    <Select value={qurans.nomor} defaultValue={quransNomor} onValueChange={(value) => switchSurat(value)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder={'Cari Surat...'} />
                                         </SelectTrigger>
