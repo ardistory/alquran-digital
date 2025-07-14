@@ -106,10 +106,6 @@ function App() {
         }
     };
 
-    useEffect(() => {
-
-    }, [tafsir]);
-
     return (
         <AppLayout>
             <div className={'space-y-5'}>
@@ -118,7 +114,7 @@ function App() {
                         <CardHeader>
                             <CardTitle>
                                 <div className={'flex flex-col gap-5'}>
-                                    <Select defaultValue={1} onValueChange={(value) => getQuranFromApi(value)}>
+                                    <Select value={qurans.nomor} defaultValue={1} onValueChange={(value) => getQuranFromApi(value)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder={'Cari Surat...'} />
                                         </SelectTrigger>
