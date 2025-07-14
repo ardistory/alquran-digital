@@ -126,7 +126,7 @@ function App() {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <div className={'w-full flex items-center justify-between'}>
+                                    <div className={cn('w-full flex items-center justify-end', { 'justify-between': qurans.suratSebelumnya && qurans.suratSelanjutnya, 'justify-start': !qurans.suratSelanjutnya })}>
                                         {(qurans.suratSebelumnya) && (
                                             <Button onClick={() => switchSurat(qurans.suratSebelumnya.nomor)}>
                                                 <ChevronLeft />
