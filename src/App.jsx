@@ -23,8 +23,12 @@ function App() {
     const audioRef = useRef(null);
     const [detailAudioPlayed, setDetailAudioPlayed] = useState({});
     const [tafsir, setTafsir] = useState('');
+    const [quransNomor, setQuransNomor] = useState(() => {
+        const storedQuransNomor = localStorage.getItem('quransNomor');
+        return storedQuransNomor ? storedQuransNomor : 1;
+    });
 
-    const getQuranFromApi = async (nomor = 1) => {
+    const getQuranFromApi = async (nomor = quransNomor) => {
         const { data } = await axios.get(`${import.meta.env.VITE_API_URL_SURAT}/${nomor}`);
         setQurans(data.data);
         (Object.keys(data.data).length > 0) ? setIsLoading(false) : setIsLoading(true);
@@ -46,7 +50,12 @@ function App() {
 
     const switchSurat = async (nomor) => {
         getQuranFromApi(nomor);
+        setQuransNomor(nomor);
     };
+
+    useEffect(() => {
+        localStorage.setItem('quransNomor', quransNomor);
+    }, [quransNomor]);
 
     const checkAyat = (namaSurat, nomorAyat) => {
         const existingSurat = ayatChecked.find(surat => surat.namaSurat === namaSurat);
